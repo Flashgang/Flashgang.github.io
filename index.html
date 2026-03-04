@@ -16,13 +16,23 @@
         <nav>
             <div class="logo">TLB.</div>
             <ul class="nav-links">
-                <li><a href="#accueil">Accueil</a></li>
-                <li><a href="#a-propos">À propos</a></li>
-                <li><a href="#parcours">Parcours</a></li>
-                <li><a href="#projets">Projets</a></li>
-                <li><a href="#certifications">Certifications</a></li>
-                <li><a href="#contact">Contact</a></li>
-                <li>
+                <li><a href="#accueil" data-i18n="nav_accueil">Accueil</a></li>
+                <li><a href="#a-propos" data-i18n="nav_apropos">À propos</a></li>
+                <li><a href="#parcours" data-i18n="nav_parcours">Parcours</a></li>
+                <li><a href="#projets" data-i18n="nav_projets">Projets</a></li>
+                <li><a href="#certifications" data-i18n="nav_certifs">Certifications</a></li>
+                <li><a href="#contact" data-i18n="nav_contact">Contact</a></li>
+                <li class="nav-controls">
+                    <select id="lang-switch" class="lang-select" aria-label="Changer de langue">
+                        <option value="fr">🇫🇷 FR</option>
+                        <option value="en">🇬🇧 EN</option>
+                        <option value="es">🇪🇸 ES</option>
+                        <option value="it">🇮🇹 IT</option>
+                        <option value="zh">🇨🇳 ZH</option>
+                        <option value="ja">🇯🇵 JA</option>
+                        <option value="ar">🇸🇦 AR</option>
+                    </select>
+
                     <button id="theme-toggle" class="theme-btn" aria-label="Changer de thème">
                         <ion-icon name="moon-outline"></ion-icon>
                     </button>
@@ -33,36 +43,36 @@
 
     <section id="accueil" class="hero">
         <div class="hero-content">
-            <h1>Bonjour, je suis <span>Théo le Bastard</span></h1>
-            <h2>Étudiant en BUT Informatique & Développeur</h2>
-            <p>Allier logique, technique et créativité pour concevoir des solutions innovantes.</p>
+            <h1 data-i18n="hero_bonjour">Bonjour, je suis <span>Théo le Bastard</span></h1>
+            <h2 data-i18n="hero_titre">Étudiant en BUT Informatique & Développeur</h2>
+            <p data-i18n="hero_desc">Allier logique, technique et créativité pour concevoir des solutions innovantes.</p>
             <div class="hero-buttons">
-                <a href="#projets" class="btn">Voir mes projets</a>
-                <a href="certification/cv/Cv-lebastard-theo.pdf" target="_blank" class="btn btn-outline">Mon CV</a>
+                <a href="#projets" class="btn" data-i18n="btn_projets">Voir mes projets</a>
+                <a href="certification/cv/Cv-lebastard-theo.pdf" target="_blank" class="btn btn-outline" data-i18n="btn_cv">Mon CV</a>
             </div>
         </div>
     </section>
 
     <section id="a-propos">
-        <h2>À propos de moi</h2>
+        <h2 data-i18n="titre_apropos">À propos de moi</h2>
         <div class="about-grid">
             
             <div class="about-text">
-                <h3 style="font-size: 20px; margin-bottom: 15px; color: var(--accent-green);">Un profil atypique et déterminé</h3>
-                <p>Mon parcours est ma plus grande force. Initialement diplômé en <strong>Maintenance des Véhicules</strong>, j'ai choisi de me réorienter pour suivre ma véritable passion : l'informatique et le développement web. Ce passé technique m'a forgé un esprit d'analyse rigoureux et une forte capacité de résolution de problèmes.</p>
+                <h3 style="font-size: 20px; margin-bottom: 15px; color: var(--accent-green);" data-i18n="apropos_soustitre1">Un profil atypique et déterminé</h3>
+                <p data-i18n="apropos_p1">Mon parcours est ma plus grande force. Initialement diplômé en <strong>Maintenance des Véhicules</strong>, j'ai choisi de me réorienter pour suivre ma véritable passion : l'informatique et le développement web. Ce passé technique m'a forgé un esprit d'analyse rigoureux et une forte capacité de résolution de problèmes.</p>
 
-                <p style="margin-top: 15px;">Aujourd'hui en <strong>3ème année de BUT Informatique</strong> (en alternance chez Procter & Gamble), mon objectif est d'intégrer un <strong>Master MIAGE en 2026</strong>. Mon but ? Allier logique et créativité pour concevoir des solutions innovantes.</p>
+                <p style="margin-top: 15px;" data-i18n="apropos_p2">Aujourd'hui en <strong>3ème année de BUT Informatique</strong> (en alternance chez Procter & Gamble), mon objectif est d'intégrer un <strong>Master MIAGE en 2026</strong>. Mon but ? Allier logique et créativité pour concevoir des solutions innovantes.</p>
 
-                <h3 style="font-size: 20px; margin: 30px 0 15px; color: var(--accent-green);">Mes centres d'intérêt</h3>
-                <p>En dehors de mes lignes de code, je suis un grand passionné du milieu <strong>Automobile</strong> et de <strong>Musique</strong>. Je pratique également le <strong>Golf</strong>, un sport qui m'apprend la patience et la précision — deux qualités indispensables pour un développeur !</p>
+                <h3 style="font-size: 20px; margin: 30px 0 15px; color: var(--accent-green);" data-i18n="apropos_soustitre2">Mes centres d'intérêt</h3>
+                <p data-i18n="apropos_p3">En dehors de mes lignes de code, je suis un grand passionné du milieu <strong>Automobile</strong> et de <strong>Musique</strong>. Je pratique également le <strong>Golf</strong>, un sport qui m'apprend la patience et la précision — deux qualités indispensables pour un développeur !</p>
 
-                <div class="qualities">
+                <div class="qualities" data-i18n="qualites">
                     <span>Ponctuel</span> • <span>Esprit d'équipe</span> • <span>À l'écoute</span> • <span>Management</span>
                 </div>
             </div>
 
             <div class="skills-container">
-                <h3 style="font-size: 20px; margin-bottom: 20px;">Technologies principales</h3>
+                <h3 style="font-size: 20px; margin-bottom: 20px;" data-i18n="tech_titre">Technologies principales</h3>
                 <div class="skills-tags">
                     <span class="tag">PHP / MySQL (80%)</span>
                     <span class="tag">HTML / CSS (80%)</span>
@@ -73,7 +83,7 @@
                     <span class="tag">Kotlin (50%)</span>
                 </div>
 
-                <h3 style="font-size: 20px; margin: 35px 0 20px;">Outils & Environnement</h3>
+                <h3 style="font-size: 20px; margin: 35px 0 20px;" data-i18n="outils_titre">Outils & Environnement</h3>
                 <div class="skills-tags">
                     <span class="tag">Power Automate</span>
                     <span class="tag">Node-Red</span>
@@ -88,125 +98,125 @@
     </section>
 
     <section id="parcours">
-        <h2>Expériences & Parcours</h2>
+        <h2 data-i18n="titre_parcours">Expériences & Parcours</h2>
         <div class="timeline">
             <div class="timeline-item">
                 <div class="date">2025 - 2026</div>
-                <h3>Alternance Software Engineer IT/OT - Procter & Gamble</h3>
-                <p> - Développement de scripts d'automatisation (Python, Node-RED) pour optimiser la collecte de données industrielles. Gestion et requêtage de bases de données SQL pour le monitoring en temps réel. </p>
-                <p> - Création d'un système alerte SMS (Node-red / commandes AT)</p>
+                <h3 data-i18n="parcours_1_titre">Alternance Software Engineer IT/OT - Procter & Gamble</h3>
+                <p data-i18n="parcours_1_desc1">- Développement de scripts d'automatisation (Python, Node-RED) pour optimiser la collecte de données industrielles. Gestion et requêtage de bases de données SQL pour le monitoring en temps réel.</p>
+                <p data-i18n="parcours_1_desc2">- Création d'un système alerte SMS (Node-red / commandes AT)</p>
             </div>
             <div class="timeline-item">
                 <div class="date">2025 - 2026</div>
-                <h3>BUT Informatique 3ème année en alternace</h3>
-                <p>IUT Amiens - Conception d'applications, administration de bases de données, gestion de projets.</p>
+                <h3 data-i18n="parcours_2_titre">BUT Informatique 3ème année en alternance</h3>
+                <p data-i18n="parcours_ecole_desc">IUT Amiens - Conception d'applications, administration de bases de données, gestion de projets.</p>
             </div>
             <div class="timeline-item">
                 <div class="date">2024 - 2025</div>
-                <h3>BUT Informatique 2ème année</h3>
-                <p>IUT Amiens - Conception d'applications, administration de bases de données, gestion de projets.</p>
+                <h3 data-i18n="parcours_3_titre">BUT Informatique 2ème année</h3>
+                <p data-i18n="parcours_ecole_desc">IUT Amiens - Conception d'applications, administration de bases de données, gestion de projets.</p>
             </div>
             <div class="timeline-item">
                 <div class="date">Fin 2023</div>
-                <h3>Stage Développeur Web</h3>
-                <p>Amiens - Ajout de fonctionnalité sur un site web de mise en ligne de cours en architecture MVC (PHP), cloud privé pour les élèves.</p>
+                <h3 data-i18n="parcours_4_titre">Stage Développeur Web</h3>
+                <p data-i18n="parcours_4_desc">Amiens - Ajout de fonctionnalités sur un site web de mise en ligne de cours en architecture MVC (PHP), cloud privé pour les élèves.</p>
             </div>
             <div class="timeline-item">
                 <div class="date">Début 2023</div>
-                <h3>Stage Développeur Web</h3>
-                <p>Gournay en Bray - Création d'un site web de vitrine d'un club de football.</p>
+                <h3 data-i18n="parcours_5_titre">Stage Développeur Web</h3>
+                <p data-i18n="parcours_5_desc">Gournay-en-Bray - Création d'un site web vitrine pour un club de football.</p>
             </div>
             <div class="timeline-item">
                 <div class="date">2022 - 2024</div>
-                <h3>BTS Services Informatiques aux Organisations - Solutions Logicielles et Applications Métiers</h3>
+                <h3 data-i18n="parcours_6_titre">BTS Services Informatiques aux Organisations (SLAM)</h3>
                 <p>Amiens - Lycée Édouard Gand</p>
             </div>
             <div class="timeline-item">
                 <div class="date">2020 - 2021</div>
-                <h3>Bac professionnel - Maintenance des véhicules automobiles</h3>
-                <p>Dieppe - Lycée Emulation Dieppoise</p>
+                <h3 data-i18n="parcours_7_titre">Bac professionnel - Maintenance des véhicules automobiles</h3>
+                <p>Dieppe - Lycée Émulation Dieppoise</p>
             </div>
             <div class="timeline-item">
                 <div class="date">2018 - 2020</div>
-                <h3>CAP - Maintenance des véhicules automobiles</h3>
-                <p>Dieppe - Lycée Emulation Dieppoise</p>
+                <h3 data-i18n="parcours_8_titre">CAP - Maintenance des véhicules automobiles</h3>
+                <p>Dieppe - Lycée Émulation Dieppoise</p>
             </div>
         </div>
     </section>
 
     <section id="projets">
-        <h2>Mes Projets</h2>
+        <h2 data-i18n="titre_projets">Mes Projets</h2>
         <div class="grid-projets">
             
             <div class="carte-projet">
                 <img src="img/Logo_Plesk.png" alt="Dropshipping">
-                <h3>Site E-commerce</h3>
+                <h3 data-i18n="projet_1_titre">Site E-commerce</h3>
                 <p class="tech-stack">PHP • SQL • API Bancaire</p>
-                <p>Création d'un site de dropshipping complet avec gestion de base de données et panel administrateur.</p>
+                <p data-i18n="projet_1_desc">Création d'un site de dropshipping complet avec gestion de base de données et panel administrateur.</p>
             </div>
 
             <div class="carte-projet">
                 <img src="img/logo_CDE.svg" alt="App CDE">
-                <h3>Application CDE</h3>
+                <h3 data-i18n="projet_2_titre">Application CDE</h3>
                 <p class="tech-stack">Kotlin • Room • SQLite</p>
-                <p>Développement d'une application mobile de covoiturage dédiée aux étudiants.</p>
+                <p data-i18n="projet_2_desc">Développement d'une application mobile de covoiturage dédiée aux étudiants.</p>
             </div>
 
             <div class="carte-projet">
                 <img src="img/projet/projet1.png" alt="SAE 4">
-                <h3>Carte Défibrillateurs</h3>
-                <p class="tech-stack">vueJS • API Géolocalisation</p>
-                <p>Projet SAE : Conception d'une carte interactive recensant les défibrillateurs disponibles en France.</p>
-                <a href="SAE4/v1.html" target="_blank" class="btn-link">Voir le projet →</a>
+                <h3 data-i18n="projet_3_titre">Carte Défibrillateurs</h3>
+                <p class="tech-stack">VueJS • API Géolocalisation</p>
+                <p data-i18n="projet_3_desc">Projet SAE : Conception d'une carte interactive recensant les défibrillateurs disponibles en France.</p>
+                <a href="SAE4/v1.html" target="_blank" class="btn-link" data-i18n="btn_voir_projet">Voir le projet →</a>
             </div>
 
             <div class="carte-projet">
                 <img src="img/projet/sioshop/1.png" alt="Sioshop">
                 <h3>Sioshop</h3>
                 <p class="tech-stack">WinForm</p>
-                <p>Développement d'une plateforme e-commerce complète. Gestion du catalogue, panier et espace client.</p>
+                <p data-i18n="projet_4_desc">Développement d'une plateforme e-commerce complète. Gestion du catalogue, panier et espace client.</p>
             </div>
 
             <div class="carte-projet">
                 <img src="img/projet/aplibanq/1.png" alt="Aplibanq">
                 <h3>Aplibanq</h3>
                 <p class="tech-stack">C#</p>
-                <p>Création d'une application bancaire logicielle permettant la gestion des comptes et des transactions.</p>
+                <p data-i18n="projet_5_desc">Création d'une application bancaire logicielle permettant la gestion des comptes et des transactions.</p>
             </div>
 
         </div>
     </section>
 
     <section id="certifications">
-        <h2>Certifications</h2>
+        <h2 data-i18n="titre_certifs">Certifications</h2>
         <div class="grid-certifs">
             <a href="certification/attestation_rgpd/attestation_rgpd.pdf" target="_blank" class="certif-card">
                 <img src="img/CNIL_logo.png" alt="CNIL">
-                <p>MOOC RGPD (CNIL)</p>
+                <p data-i18n="certif_1">MOOC RGPD (CNIL)</p>
             </a>
             <a href="certification/pix/pix.pdf" target="_blank" class="certif-card">
                 <img src="img/pix.png" alt="PIX">
-                <p>Certification PIX</p>
+                <p data-i18n="certif_2">Certification PIX</p>
             </a>
             <a target="_blank" class="certif-card">
                 <img src="img/SST.jpeg" alt="SST">
-                <p>Sauveteur secouriste du travail</p>
+                <p data-i18n="certif_3">Sauveteur secouriste du travail</p>
             </a>
         </div>
     </section>
 
     <section id="contact">
-        <h2>Me Contacter</h2>
-        <p>Un projet ? Une opportunité ? Discutons-en !</p>
+        <h2 data-i18n="titre_contact">Me Contacter</h2>
+        <p data-i18n="contact_desc">Un projet ? Une opportunité ? Discutons-en !</p>
         <div class="contact-links">
-            <a href="mailto:theolebastard2@gmail.com" class="btn"><ion-icon name="mail-outline"></ion-icon> Email</a>
+            <a href="mailto:theolebastard2@gmail.com" class="btn"><ion-icon name="mail-outline"></ion-icon> <span data-i18n="btn_email">Email</span></a>
             <a href="https://www.linkedin.com/in/theo-le-bastard/" target="_blank" class="btn btn-outline"><ion-icon name="logo-linkedin"></ion-icon> LinkedIn</a>
             <a href="https://github.com/Flashgang" target="_blank" class="btn btn-outline"><ion-icon name="logo-github"></ion-icon> GitHub</a>
         </div>
     </section>
 
     <footer>
-        <p>© 2026 Théo le Bastard - Tous droits réservés.</p>
+        <p data-i18n="footer_text">© 2026 Théo le Bastard - Tous droits réservés.</p>
     </footer>
 
     <script src="script.js"></script>

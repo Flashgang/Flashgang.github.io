@@ -365,3 +365,35 @@ footer {
     color: var(--accent-green);
     transform: scale(1.1); /* Petit effet de zoom au survol */
 }
+
+
+/* --- CONTRÔLES (Langue & Thème) --- */
+.nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.lang-select {
+    background: transparent;
+    border: 1px solid var(--text-light);
+    color: var(--text-color);
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    outline: none;
+}
+
+.lang-select option {
+    background: var(--bg-color);
+    color: var(--text-color);
+}
+
+/* Magie pour l'Arabe (Right-to-Left) */
+html[dir="rtl"] {
+    text-align: right;
+}
+html[dir="rtl"] .nav-links {
+    flex-direction: row-reverse;
+}
