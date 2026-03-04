@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carte des Défibrillateurs</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary: #e74c3c;
+      --primary-light: #ff6b6b;
+      --primary-dark: #c0392b;
+      --text: #333;
+      --light: #f8f9fa;
+      --dark: #343a40;
+      --shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--text);
+      background-color: var(--light);
+      transition: all 0.3s ease;
+    }
+    
+    #map {
+      height: 100vh;
+      width: 100%;
+      z-index: 1;
+    }
+    
+    /* Header avec titre */
+    .header {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 1000;
+      background: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      max-width: 300px;
+    }
+    
+    .header h1 {
+      font-size: 18px;
+      margin-left: 10px;
+      font-weight: 600;
+    }
+    
+    .header i {
+      color: var(--primary);
+      font-size: 24px;
+    }
+    
+    /* Barre de recherche */
+    .search-container {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      background: white;
+      padding: 12px 16px;
+      border-radius: 50px;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      transition: all 0.3s ease;
+      width: 400px;
+      max-width: 90%;
+    }
+    
+    .search-container:focus-within {
+      box-shadow: 0 6px 16px rgba(231, 76, 60, 0.25);
+    }
+    
+    #searchInput {
+      border: none;
+      outline: none;
+      width: 100%;
+      padding: 8px 12px;
+      font-size: 15px;
+      font-family: inherit;
+    }
+    
+    #searchBtn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 8px 20px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    
+    #searchBtn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+    
+    /* Info panel */
+    .info-panel {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+      background: white;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      padding: 15px;
+      max-width: 300px;
+      transform: translateY(0);
+      transition: all 0.4s ease;
+    }
+    
+    .info-panel.hidden {
+      transform: translateY(calc(100% + 20px));
+    }
+    
+    .info-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    
+    .info-header h2 {
+      font-size: 16px;
+      font-weight: 600;
+    }
+    
+    .close-btn {
+      background: none;
+      border: none;
+      color: var(--dark);
+      cursor: pointer;
+      font-size: 18px;
+      padding: 0;
+    }
+    
+    .info-content {
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    
+    .info-content div {
+      margin-bottom: 8px;
+    }
+    
+    .info-label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 3px;
+      color: var(--primary);
+    }
+    
+    /* Controls */
+    .map-controls {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .control-btn {
+      background: white;
+      color: var(--dark);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .control-btn:hover {
+      transform: scale(1.05);
+      background: var(--light);
+    }
+    
+    .control-btn.active {
+      background: var(--primary);
+      color: white;
+    }
+    
+    /* Mobile adaptations */
+    @media (max-width: 768px) {
+      .header {
+        top: 10px;
+        left: 10px;
+        padding: 8px 12px;
+      }
+      
+      .header h1 {
+        font-size: 16px;
+      }
+      
+      .search-container {
+        top: 10px;
+        padding: 8px 12px;
+        width: 70%;
+      }
+      
+      .info-panel {
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+        max-width: none;
+      }
+      
+      .map-controls {
+        bottom: 20px;
+        top: auto;
+        right: 10px;
+        transform: none;
+      }
+    }
+    
+    /* Pulse animation for marker highlight */
+    @keyframes pulse {
+      0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7);
+      }
+      
+      70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 20px rgba(231, 76, 60, 0);
+      }
+      
+      100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(231, 76, 60, 0);
+      }
+    }
+    
+    .pulse-circle {
+      border-radius: 50%;
+      box-shadow: 0 0 0 rgba(231, 76, 60, 0.4);
+      animation: pulse 2s infinite;
+    }
+    
+    /* Custom popup styling */
+    .leaflet-popup-content-wrapper {
+      border-radius: 8px;
+      padding: 0;
+      overflow: hidden;
+    }
+    
+    .leaflet-popup-content {
+      margin: 0;
+      padding: 0;
+    }
+    
+    .popup-header {
+      background-color: var(--primary);
+      color: white;
+      padding: 10px 15px;
+      font-weight: bold;
+    }
+    
+    .popup-content {
+      padding: 12px 15px;
+    }
+    
+    .popup-row {
+      margin-bottom: 8px;
+    }
+    
+    .popup-label {
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+    
+    /* Loading spinner */
+    .loader {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255,255,255,0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+      transition: opacity 0.3s ease;
+    }
+    
+    .loader.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid rgba(231, 76, 60, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--primary);
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* Toast notification */
+    .toast {
+      position: absolute;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--dark);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 50px;
+      box-shadow: var(--shadow);
+      z-index: 2000;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .toast.show {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header avec titre -->
+  <div class="header">
+    <i class="fas fa-heartbeat"></i>
+    <h1>Carte des Défibrillateurs</h1>
+  </div>
+
+  <!-- Barre de recherche -->
+  <div class="search-container">
+    <input type="text" id="searchInput" placeholder="Rechercher par ville ou code postal...">
+    <button id="searchBtn">Rechercher</button>
+  </div>
+
+  <!-- Contrôles de la carte -->
+  <div class="map-controls">
+    <button class="control-btn" id="locateBtn" title="Ma position">
+      <i class="fas fa-location-arrow"></i>
+    </button>
+    <button class="control-btn" id="resetBtn" title="Vue d'ensemble">
+      <i class="fas fa-home"></i>
+    </button>
+    <button class="control-btn" id="infoBtn" title="À propos">
+      <i class="fas fa-info"></i>
+    </button>
+  </div>
+
+  <!-- Panel d'information -->
+  <div class="info-panel hidden" id="infoPanel">
+    <div class="info-header">
+      <h2>Informations sur le défibrillateur</h2>
+      <button class="close-btn" id="closeInfoBtn">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="info-content" id="infoContent">
+      <div>Veuillez cliquer sur un défibrillateur pour afficher ses informations.</div>
+    </div>
+  </div>
+
+  <!-- Toast notification -->
+  <div class="toast" id="toast">Recherche terminée</div>
+
+  <!-- Loading spinner -->
+  <div class="loader" id="loader">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Main map -->
+  <div id="map"></div>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script>
+    // Variables globales
+    let map;
+    let allDefibs = [];
+    let displayedMarkers = [];
+    let highlightCircle;
+    let selectedMarker = null;
+    let userMarker = null;
+    
+    // Créer un loading spinner
+    const loader = document.getElementById('loader');
+    const toast = document.getElementById('toast');
+    
+    // Personnalisation des icônes
+    const defibIcon = L.icon({
+      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+      shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41]
+    });
+    
+    const userPositionIcon = L.icon({
+      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
+      shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41]
+    });
+
+    // Initialiser la carte et charger les données
+    function initApp(position) {
+      // Coordonnées initiales
+      const latitude = position.coords ? position.coords.latitude : 46.603354;
+      const longitude = position.coords ? position.coords.longitude : 1.888334;
+      
+      // Créer la carte Leaflet
+      map = L.map('map', {
+        zoomControl: false,  // Désactiver les contrôles de zoom par défaut
+      }).setView([latitude, longitude], 13);
+      
+      // Ajouter les contrôles de zoom en bas à gauche
+      L.control.zoom({
+        position: 'bottomleft'
+      }).addTo(map);
+      
+      // Ajouter le fond de carte
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(map);
+      
+      // Marquer la position de l'utilisateur si disponible
+      if (position.coords) {
+        userMarker = L.marker([latitude, longitude], {
+          icon: userPositionIcon
+        }).addTo(map);
+        userMarker.bindPopup("<strong>Votre position actuelle</strong>").openPopup();
+      }
+      
+      // Charger les données CSV
+      loadDefibData();
+      
+      // Ajouter les écouteurs d'événements pour la mise à jour des marqueurs
+      map.on('moveend', updateVisibleMarkers);
+      map.on('zoomend', updateVisibleMarkers);
+    }
+    
+    // Charger les données des défibrillateurs
+    function loadDefibData() {
+      Papa.parse('geodae.csv', {
+        download: true,
+        header: true,
+        complete: function(results) {
+          allDefibs = results.data.filter(defib => 
+            defib.c_lat_coor1 && defib.c_long_coor1 && 
+            parseFloat(defib.c_lat_coor1) && parseFloat(defib.c_long_coor1)
+          );
+          
+          // Masquer le chargement et mettre à jour les marqueurs
+          loader.classList.add('hidden');
+          updateVisibleMarkers();
+          
+          // Afficher le nombre de défibrillateurs chargés
+          showToast(`${allDefibs.length} défibrillateurs disponibles`);
+        },
+        error: function(err) {
+          console.error("Erreur lors du chargement des données :", err);
+          loader.classList.add('hidden');
+          showToast("Erreur lors du chargement des données", true);
+        }
+      });
+    }
+    
+    // Mise à jour des marqueurs visibles
+    function updateVisibleMarkers() {
+      // Limiter le nombre de marqueurs pour des performances optimales
+      const MAX_MARKERS = 200;
+      const bounds = map.getBounds();
+      
+      // Supprimer les marqueurs existants
+      displayedMarkers.forEach(marker => map.removeLayer(marker));
+      displayedMarkers = [];
+      
+      // Filtrer les défibs dans la zone visible
+      const visibleDefibs = allDefibs.filter(defib => {
+        const lat = parseFloat(defib.c_lat_coor1);
+        const lon = parseFloat(defib.c_long_coor1);
+        return !isNaN(lat) && !isNaN(lon) && bounds.contains([lat, lon]);
+      });
+      
+      // Limiter le nombre de marqueurs si nécessaire
+      const defibsToShow = visibleDefibs.length > MAX_MARKERS 
+        ? visibleDefibs.slice(0, MAX_MARKERS) 
+        : visibleDefibs;
+      
+      // Créer les nouveaux marqueurs
+      defibsToShow.forEach(defib => {
+        const lat = parseFloat(defib.c_lat_coor1);
+        const lon = parseFloat(defib.c_long_coor1);
+        
+        const marker = L.marker([lat, lon], { icon: defibIcon }).addTo(map);
+        
+        // Créer le contenu du popup avec HTML personnalisé
+        const popupContent = `
+          <div class="custom-popup">
+            <div class="popup-header">
+              ${defib.c_nom || 'Défibrillateur'}
+            </div>
+            <div class="popup-content">
+              <div class="popup-row">
+                <span class="popup-label">Adresse:</span><br>
+                ${defib.c_adr_num || ''} ${defib.c_adr_voie || ''}<br>
+                ${defib.c_com_cp || ''} ${defib.c_com_nom || ''}
+              </div>
+              <div class="popup-row">
+                <span class="popup-label">Accessibilité:</span><br>
+                ${defib.c_acc || 'Non précisé'}
+              </div>
+              <div class="popup-row">
+                <span class="popup-label">Disponibilité:</span><br>
+                ${defib.c_disp_j || 'N/A'}
+              </div>
+              <div class="popup-row">
+                <span class="popup-label">Heure:</span><br>
+                ${defib.c_disp_h || 'N/A'}
+              </div>
+              <div class="popup-row">
+                <span class="popup-label">Lieu:</span><br>
+                ${defib.c_acc_complt || 'N/A'}
+              </div>
+            </div>
+          </div>
+        `;
+        
+        // Configurer le popup personnalisé
+        const popup = L.popup({
+          closeButton: true,
+          autoClose: true,
+          className: 'custom-popup-wrapper'
+        }).setContent(popupContent);
+        
+        marker.bindPopup(popup);
+        displayedMarkers.push(marker);
+        
+        // Gérer le clic sur un marqueur
+        marker.on('click', function() {
+          selectedMarker = defib;
+          showInfoPanel(defib);
+        });
+      });
+      
+      // Afficher un indicateur si certains marqueurs sont masqués
+      if (visibleDefibs.length > MAX_MARKERS) {
+        showToast(`Affichage de ${MAX_MARKERS} défibrillateurs sur ${visibleDefibs.length} disponibles dans cette zone. Zoomez pour en voir plus.`);
+      }
+    }
+    
+    // Recherche de défibrillateurs par ville ou code postal
+    function searchDefib() {
+      const input = document.getElementById('searchInput').value.toLowerCase().trim();
+      if (!input) return;
+      
+      loader.classList.remove('hidden');
+      
+      setTimeout(() => {
+        const matchingDefibs = allDefibs.filter(defib => {
+          const ville = defib.c_com_nom?.toLowerCase() || '';
+          const cp = defib.c_com_cp?.toString() || '';
+          return ville.includes(input) || cp.startsWith(input);
+        });
+        
+        if (matchingDefibs.length > 0) {
+          // Calculer le centre de toutes les correspondances
+          const center = getCenterOfPoints(matchingDefibs);
+          map.setView([center.lat, center.lng], 13);
+          
+          // Ajouter une animation de cercle pour mettre en évidence la zone
+          if (highlightCircle) map.removeLayer(highlightCircle);
+          
+          highlightCircle = L.circle([center.lat, center.lng], {
+            radius: 500,
+            color: '#e74c3c',
+            fillColor: '#e74c3c',
+            fillOpacity: 0.2,
+            className: 'pulse-circle'
+          }).addTo(map);
+          
+          showToast(`${matchingDefibs.length} défibrillateurs trouvés.`);
+        } else {
+          showToast("Aucune correspondance trouvée.", true);
+        }
+        
+        loader.classList.add('hidden');
+      }, 500); // Petit délai pour l'animation de chargement
+    }
+    
+    // Calculer le centre d'un groupe de points
+    function getCenterOfPoints(defibs) {
+      let latSum = 0;
+      let lngSum = 0;
+      let count = 0;
+      
+      defibs.forEach(defib => {
+        const lat = parseFloat(defib.c_lat_coor1);
+        const lng = parseFloat(defib.c_long_coor1);
+        
+        if (!isNaN(lat) && !isNaN(lng)) {
+          latSum += lat;
+          lngSum += lng;
+          count++;
+        }
+      });
+      
+      return {
+        lat: latSum / count,
+        lng: lngSum / count
+      };
+    }
+    
+    // Afficher le panneau d'informations
+    function showInfoPanel(defib) {
+      const panel = document.getElementById('infoPanel');
+      const content = document.getElementById('infoContent');
+      
+      content.innerHTML = `
+        <div>
+          <span class="info-label">Nom</span>
+          ${defib.c_nom || 'Défibrillateur sans nom'}
+        </div>
+        <div>
+          <span class="info-label">Adresse</span>
+          ${defib.c_adr_num || ''} ${defib.c_adr_voie || ''}<br>
+          ${defib.c_com_cp || ''} ${defib.c_com_nom || ''}
+        </div>
+        <div>
+          <span class="info-label">Accessibilité</span>
+          ${defib.c_acc || 'Non précisé'}
+        </div>
+        <div>
+          <span class="info-label">Disponibilité</span>
+          ${defib.c_disp_j || 'Non précisé'}
+        </div>
+        <div>
+        <span class="info-label">Heure</span>
+          ${defib.c_disp_h || 'Non précisé'}
+        </div>
+        <div>
+          <span class="info-label">Lieu</span>
+          ${defib.c_acc_complt || 'Non précisé'}
+        </div>
+            `;
+      
+      panel.classList.remove('hidden');
+    }
+    
+    // Afficher un toast de notification
+    function showToast(message, isError = false) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      
+      if (isError) {
+        toast.style.background = '#e74c3c';
+      } else {
+        toast.style.background = '#343a40';
+      }
+      
+      toast.classList.add('show');
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+    
+// Fonction pour localiser l'utilisateur
+function locateUser() {
+  console.log("Début de la localisation");
+
+  if (navigator.geolocation) {
+    console.log("Géolocalisation prise en charge");
+    
+    loader.classList.remove('hidden');  // Affiche l'indicateur de chargement
+    
+    navigator.geolocation.getCurrentPosition(
+      function(position) {
+        console.log("Position obtenue", position);
+        
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        
+        map.setView([lat, lng], 15);  // Met à jour la vue de la carte
+        
+        // Si un marqueur existe, on met à jour sa position, sinon on en crée un nouveau
+        if (userMarker) {
+          console.log("Mise à jour du marqueur existant");
+          userMarker.setLatLng([lat, lng]);
+        } else {
+          console.log("Création d'un nouveau marqueur");
+          userMarker = L.marker([lat, lng], {
+            icon: userPositionIcon  // Icône personnalisée
+          }).addTo(map);
+          userMarker.bindPopup("<strong>Votre position actuelle</strong>");
+        }
+        
+        userMarker.openPopup();
+        loader.classList.add('hidden');  // Masque l'indicateur de chargement
+        showToast("Position localisée");
+      },
+      function(error) {
+        loader.classList.add('hidden');  // Masque l'indicateur en cas d'erreur
+        showToast("Impossible de déterminer votre position", true);
+        console.error("Erreur de géolocalisation:", error);
+      }
+    );
+  } else {
+    showToast("La géolocalisation n'est pas prise en charge par votre navigateur", true);
+  }
+}
+
+    
+    // Initialiser l'application
+    window.addEventListener('load', function() {
+      // Vérifier la géolocalisation
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(initApp, function() {
+          initApp({});  // Fallback sans position
+        });
+      } else {
+        initApp({});  // Fallback sans géolocalisation
+      }
+      
+      // Gérer les événements des boutons
+      document.getElementById('searchBtn').addEventListener('click', searchDefib);
+      document.getElementById('searchInput').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') searchDefib();
+      });
+      
+      document.getElementById('locateBtn').addEventListener('click', locateUser);
+      
+      document.getElementById('resetBtn').addEventListener('click', function() {
+        map.setView([46.603354, 1.888334], 6);  // Vue d'ensemble de la France
+        showToast("Vue réinitialisée");
+      });
+      
+      document.getElementById('infoBtn').addEventListener('click', function() {
+        const panel = document.getElementById('infoPanel');
+        
+        if (panel.classList.contains('hidden')) {
+          const content = document.getElementById('infoContent');
+          
+          if (!selectedMarker) {
+            content.innerHTML = `
+              <div>
+                <span class="info-label">À propos de cette application</span>
+                Cette carte interactive vous permet de localiser les défibrillateurs disponibles en France. 
+                Utilisez la barre de recherche pour trouver des défibrillateurs par ville ou code postal. 
+                Cliquez sur un marqueur pour afficher les détails du défibrillateur.
+              </div>
+              <div>
+                <span class="info-label">Comment utiliser</span>
+                <ul style="padding-left: 20px; margin-top: 5px;">
+                  <li>Recherchez par ville ou code postal</li>
+                  <li>Cliquez sur les marqueurs rouges pour plus d'informations</li>
+                  <li>Utilisez le bouton de localisation pour trouver des défibrillateurs près de vous</li>
+                </ul>
+              </div>
+            `;
+          }
+          
+          panel.classList.remove('hidden');
+        } else {
+          panel.classList.add('hidden');
+        }
+      });
+      
+      document.getElementById('closeInfoBtn').addEventListener('click', function() {
+        document.getElementById('infoPanel').classList.add('hidden');
+      });
+    });
+  </script>
+</body>
+</html>
