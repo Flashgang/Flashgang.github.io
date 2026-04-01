@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>ERREUR CRITIQUE 404</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #ff4d4d;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+        #loading-box { width: 300px; border: 2px solid #ff4d4d; padding: 20px; }
+        #bar-container { width: 100%; background: #333; height: 20px; margin-top: 10px; }
+        #bar { width: 0%; height: 100%; background: #ff4d4d; transition: width 0.5s; }
+        .hidden { display: none; }
+        .heart { color: #ff69b4; font-size: 50px; }
+    </style>
+</head>
+<body>
+
+    <div id="prank-step">
+        <h1>⚠️ ERREUR SYSTÈME ⚠️</h1>
+        <p>Tentative de récupération des données de Théo...</p>
+        <div id="loading-box">
+            <div id="status">Chargement des secrets... 0%</div>
+            <div id="bar-container"><div id="bar"></div></div>
+        </div>
+    </div>
+
+    <div id="final-step" class="hidden">
+        <h1 style="color: #ff69b4;">🐟 Poisson d'avril ! 🐟</h1>
+        <p style="color: white; font-size: 1.2em;">
+            Le système a planté parce qu'il y a trop d'amour pour toi ici.
+        </p>
+        <div class="heart">❤️</div>
+        <p style="color: #ccc;">(Désolé pour la petite frayeur !)</p>
+    </div>
+
+    <script>
+        let percent = 0;
+        const bar = document.getElementById('bar');
+        const status = document.getElementById('status');
+
+        const interval = setInterval(() => {
+            percent += Math.floor(Math.random() * 15);
+            if (percent > 100) percent = 100;
+            
+            bar.style.width = percent + '%';
+            status.innerText = "Analyse du dossier 'Amour'... " + percent + "%";
+
+            if (percent === 100) {
+                clearInterval(interval);
+                setTimeout(() => {
+                    document.getElementById('prank-step').classList.add('hidden');
+                    document.getElementById('final-step').classList.remove('hidden');
+                    document.body.style.backgroundColor = "#2d0a1a"; // Change le fond en violet/rose
+                }, 1000);
+            }
+        }, 400);
+    </script>
+</body>
+</html>
