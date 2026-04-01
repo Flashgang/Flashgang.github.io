@@ -2,45 +2,85 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>ERREUR CRITIQUE 404</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚠️ Alerte Système</title>
     <style>
+        * { box-sizing: border-box; }
         body {
-            background-color: #1a1a1a;
+            background-color: #0f0f0f;
             color: #ff4d4d;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
             margin: 0;
+            padding: 20px;
             text-align: center;
+            overflow: hidden;
         }
-        #loading-box { width: 300px; border: 2px solid #ff4d4d; padding: 20px; }
-        #bar-container { width: 100%; background: #333; height: 20px; margin-top: 10px; }
-        #bar { width: 0%; height: 100%; background: #ff4d4d; transition: width 0.5s; }
+        #prank-step, #final-step { width: 100%; max-width: 400px; }
+        
+        h1 { font-size: 1.5rem; margin-bottom: 20px; }
+        
+        #loading-box { 
+            width: 100%; 
+            border: 1px solid #ff4d4d; 
+            padding: 25px 15px; 
+            border-radius: 8px;
+            background: rgba(255, 77, 77, 0.05);
+        }
+        
+        #bar-container { 
+            width: 100%; 
+            background: #222; 
+            height: 12px; 
+            margin-top: 15px; 
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        #bar { 
+            width: 0%; 
+            height: 100%; 
+            background: linear-gradient(90deg, #ff4d4d, #ff8080); 
+            transition: width 0.3s; 
+        }
+
         .hidden { display: none; }
-        .heart { color: #ff69b4; font-size: 50px; }
+        .heart { 
+            color: #ff69b4; 
+            font-size: 80px; 
+            margin: 20px 0;
+            animation: beat 0.8s infinite alternate;
+        }
+
+        @keyframes beat {
+            to { transform: scale(1.2); }
+        }
+
+        #final-step h1 { color: #ff69b4; font-size: 2rem; }
     </style>
 </head>
 <body>
 
     <div id="prank-step">
-        <h1>⚠️ ERREUR SYSTÈME ⚠️</h1>
-        <p>Tentative de récupération des données de Théo...</p>
+        <h1>⚠️ ERREUR FATALE</h1>
+        <p>Accès non autorisé détecté sur le téléphone de Théo...</p>
         <div id="loading-box">
-            <div id="status">Chargement des secrets... 0%</div>
+            <div id="status" style="font-size: 0.9rem;">Initialisation...</div>
             <div id="bar-container"><div id="bar"></div></div>
         </div>
+        <p style="font-size: 0.7rem; color: #666; margin-top: 20px;">Code erreur: 0x800401F3</p>
     </div>
 
     <div id="final-step" class="hidden">
-        <h1 style="color: #ff69b4;">🐟 Poisson d'avril ! 🐟</h1>
-        <p style="color: white; font-size: 1.2em;">
-            Le système a planté parce qu'il y a trop d'amour pour toi ici.
-        </p>
+        <h1>🐟 Poisson d'avril !</h1>
         <div class="heart">❤️</div>
-        <p style="color: #ccc;">(Désolé pour la petite frayeur !)</p>
+        <p style="color: white; font-size: 1.2rem; line-height: 1.5;">
+            Mon site a buggé parce qu'il n'arrivait pas à charger tout l'amour que j'ai pour toi.
+        </p>
+        <p style="color: #ffb3d9; margin-top: 20px;">Je t'aime !</p>
     </div>
 
     <script>
@@ -48,22 +88,37 @@
         const bar = document.getElementById('bar');
         const status = document.getElementById('status');
 
+        const messages = [
+            "Analyse des messages...",
+            "Scan des photos...",
+            "Calcul de la mignonnerie...",
+            "Surcharge d'amour détectée...",
+            "Explosion du serveur imminent !"
+        ];
+
         const interval = setInterval(() => {
-            percent += Math.floor(Math.random() * 15);
+            percent += Math.floor(Math.random() * 8) + 2;
             if (percent > 100) percent = 100;
             
             bar.style.width = percent + '%';
-            status.innerText = "Analyse du dossier 'Amour'... " + percent + "%";
+            
+            // Change le message selon la progression
+            let msgIndex = Math.floor((percent / 100) * messages.length);
+            if (msgIndex >= messages.length) msgIndex = messages.length - 1;
+            status.innerText = messages[msgIndex] + " " + percent + "%";
 
             if (percent === 100) {
                 clearInterval(interval);
+                // Petite vibration pour l'effet "erreur" (marche sur bcp de téléphones)
+                if (window.navigator.vibrate) window.navigator.vibrate([100, 50, 100]);
+
                 setTimeout(() => {
                     document.getElementById('prank-step').classList.add('hidden');
                     document.getElementById('final-step').classList.remove('hidden');
-                    document.body.style.backgroundColor = "#2d0a1a"; // Change le fond en violet/rose
-                }, 1000);
+                    document.body.style.backgroundColor = "#1a050d";
+                }, 1200);
             }
-        }, 400);
+        }, 250);
     </script>
 </body>
 </html>
