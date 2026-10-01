@@ -49,7 +49,7 @@
             <p data-i18n="hero_desc">Allier logique, technique et créativité pour concevoir des solutions innovantes.</p>
             <div class="hero-buttons">
                 <a href="#projets" class="btn" data-i18n="btn_projets">Voir mes projets</a>
-                <a href="certification/cv/Cv-lebastard-theo.pdf" target="_blank" class="btn btn-outline" data-i18n="btn_cv">Mon CV</a>
+                <a href="certification/cv/Cv-lebastard-theo.pdf" target="_blank" class="btn btn-outline" data-viewer data-i18n="btn_cv">Mon CV</a>
             </div>
         </div>
     </section>
@@ -212,11 +212,11 @@
     <section id="certifications">
         <h2 data-i18n="titre_certifs">Certifications</h2>
         <div class="grid-certifs">
-            <a href="certification/attestation_rgpd/attestation_rgpd.pdf" target="_blank" class="certif-card">
+            <a href="certification/attestation_rgpd/attestation_rgpd.pdf" target="_blank" class="certif-card" data-viewer>
                 <img src="img/CNIL_logo.png" alt="CNIL">
                 <p data-i18n="certif_1">MOOC RGPD (CNIL)</p>
             </a>
-            <a href="certification/pix/pix.pdf" target="_blank" class="certif-card">
+            <a href="certification/pix/pix.pdf" target="_blank" class="certif-card" data-viewer>
                 <img src="img/pix.png" alt="Pix">
                 <p data-i18n="certif_2">Certification Pix</p>
             </a>
@@ -236,6 +236,23 @@
             <a href="https://github.com/Flashgang" target="_blank" class="btn btn-outline"><ion-icon name="logo-github"></ion-icon> GitHub</a>
         </div>
     </section>
+
+    <!-- Visionneuse de documents (CV, certifications) -->
+    <dialog id="doc-viewer" class="doc-viewer" aria-labelledby="doc-viewer-title">
+        <div class="doc-viewer-bar">
+            <p id="doc-viewer-title" class="doc-viewer-title"></p>
+            <div class="doc-viewer-actions">
+                <a id="doc-viewer-open" class="doc-viewer-btn" href="#" target="_blank" rel="noopener">
+                    <ion-icon name="open-outline"></ion-icon>
+                    <span data-i18n="viewer_open">Ouvrir dans un onglet</span>
+                </a>
+                <button type="button" id="doc-viewer-close" class="doc-viewer-close" aria-label="Fermer" autofocus>
+                    <ion-icon name="close"></ion-icon>
+                </button>
+            </div>
+        </div>
+        <iframe id="doc-viewer-frame" class="doc-viewer-frame" src="about:blank" title=""></iframe>
+    </dialog>
 
     <footer>
         <p data-i18n="footer_text">© 2026 Théo Le Bastard - Tous droits réservés.</p>
