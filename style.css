@@ -397,3 +397,141 @@ html[dir="rtl"] {
 html[dir="rtl"] .nav-links {
     flex-direction: row-reverse;
 }
+/* --- Statut des diplômes (Parcours) : porté par le point de la timeline --- */
+.date-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+
+.date-row .date {
+    margin-bottom: 0;
+}
+
+.status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.status-icon {
+    position: relative;
+    display: inline-flex;
+}
+
+.status-icon ion-icon {
+    font-size: 18px;
+    color: var(--accent-green);
+}
+
+/* En cours : le sablier se retourne, marque une pause, puis recommence */
+.status-current .status-icon ion-icon {
+    animation: hourglass-flip 3s ease-in-out infinite;
+}
+
+@keyframes hourglass-flip {
+    0%, 70%  { transform: rotate(0deg); }
+    85%, 100% { transform: rotate(180deg); }
+}
+
+/* Diplômé : la toque brille et une étincelle scintille */
+.status-done .status-icon ion-icon {
+    animation: diploma-glow 3.2s ease-in-out infinite;
+    animation-delay: var(--shine-delay, 0s);
+}
+
+.status-done .status-icon::after {
+    content: '';
+    position: absolute;
+    top: -5px;
+    right: -6px;
+    width: 9px;
+    height: 9px;
+    background: #ffd54a;
+    clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+    opacity: 0;
+    transform: scale(0);
+    animation: diploma-sparkle 3.2s ease-in-out infinite;
+    animation-delay: var(--shine-delay, 0s);
+}
+
+@keyframes diploma-glow {
+    0%, 55%, 100% { filter: drop-shadow(0 0 0 rgba(0, 210, 106, 0)); }
+    70% { filter: drop-shadow(0 0 5px rgba(0, 210, 106, 0.9)) brightness(1.15); }
+}
+
+@keyframes diploma-sparkle {
+    0%, 60%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+    72% { opacity: 1; transform: scale(1.1) rotate(45deg); }
+    84% { opacity: 0; transform: scale(0.4) rotate(90deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .status-current .status-icon ion-icon,
+    .status-done .status-icon ion-icon,
+    .status-done .status-icon::after {
+        animation: none;
+    }
+}
+
+/* Progression du diplôme en cours : une case par année */
+.progress {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: -2px 0 12px;
+}
+
+.progress-track {
+    display: flex;
+    gap: 4px;
+}
+
+.progress-track .seg {
+    width: 36px;
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(0, 210, 106, 0.18);
+}
+
+.progress-track .seg.is-filled {
+    background: var(--accent-green);
+}
+
+.progress-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-light);
+}
+
+/* Diplômé : point plein avec une coche */
+.timeline-item.is-done::before {
+    left: -39px;
+    top: -1px;
+    width: 16px;
+    height: 16px;
+    background: var(--accent-green) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 8.2l2.3 2.3 4.7-4.9' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 16px no-repeat;
+}
+
+/* En cours : anneau vide avec un halo qui pulse */
+.timeline-item.is-current::before {
+    box-sizing: border-box;
+    background: var(--bg-color);
+    border: 2.5px solid var(--accent-green);
+    animation: status-pulse 2.4s ease-out infinite;
+}
+
+@keyframes status-pulse {
+    0%   { box-shadow: 0 0 0 4px var(--bg-color), 0 0 0 4px rgba(0, 210, 106, 0.45); }
+    100% { box-shadow: 0 0 0 4px var(--bg-color), 0 0 0 12px rgba(0, 210, 106, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .timeline-item.is-current::before {
+        animation: none;
+    }
+}
