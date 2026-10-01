@@ -163,6 +163,8 @@ document.addEventListener("DOMContentLoaded", function () {
             certif_3: "Sauveteur secouriste du travail",
             contact_desc: "Un projet ? Une opportunité ? Discutons-en !",
             btn_email: "Email",
+            viewer_open: "Ouvrir dans un onglet",
+            viewer_close: "Fermer",
             footer_text: "© 2026 Théo Le Bastard - Tous droits réservés."
         },
         en: {
@@ -239,6 +241,8 @@ document.addEventListener("DOMContentLoaded", function () {
             certif_3: "First Aid at Work",
             contact_desc: "A project? An opportunity? Let's talk!",
             btn_email: "Email",
+            viewer_open: "Open in a new tab",
+            viewer_close: "Close",
             footer_text: "© 2026 Théo Le Bastard - All rights reserved."
         },
         es: {
@@ -315,6 +319,8 @@ document.addEventListener("DOMContentLoaded", function () {
             certif_3: "Socorrista en el trabajo (SST)",
             contact_desc: "¿Un proyecto? ¿Una oportunidad? ¡Hablemos!",
             btn_email: "Email",
+            viewer_open: "Abrir en una pestaña",
+            viewer_close: "Cerrar",
             footer_text: "© 2026 Théo Le Bastard - Todos los derechos reservados."
         },
         it: {
@@ -391,6 +397,8 @@ document.addEventListener("DOMContentLoaded", function () {
             certif_3: "Primo Soccorso sul Lavoro (SST)",
             contact_desc: "Un progetto? Un'opportunità? Parliamone!",
             btn_email: "Email",
+            viewer_open: "Apri in una scheda",
+            viewer_close: "Chiudi",
             footer_text: "© 2026 Théo Le Bastard - Tutti i diritti riservati."
         },
         zh: {
@@ -467,6 +475,8 @@ document.addEventListener("DOMContentLoaded", function () {
             certif_3: "职场急救员 (SST)",
             contact_desc: "有项目？有机会？我们聊聊吧！",
             btn_email: "电子邮件",
+            viewer_open: "在新标签页中打开",
+            viewer_close: "关闭",
             footer_text: "© 2026 Théo Le Bastard - 保留所有权利。"
         },
         ja: {
@@ -543,6 +553,8 @@ document.addEventListener("DOMContentLoaded", function () {
             certif_3: "職場における応急救護員（SST）",
             contact_desc: "プロジェクト？機会？ぜひお話ししましょう！",
             btn_email: "Eメール",
+            viewer_open: "新しいタブで開く",
+            viewer_close: "閉じる",
             footer_text: "© 2026 Théo Le Bastard - 無断転載を禁じます。"
         },
         ar: {
@@ -619,6 +631,8 @@ document.addEventListener("DOMContentLoaded", function () {
             certif_3: "مسعف أولي في العمل (SST)",
             contact_desc: "هل لديك مشروع؟ فرصة؟ دعنا نتحدث!",
             btn_email: "البريد الإلكتروني",
+            viewer_open: "فتح في علامة تبويب جديدة",
+            viewer_close: "إغلاق",
             footer_text: "© 2026 ثيو لو باستارد - جميع الحقوق محفوظة."
         }
         
@@ -660,6 +674,53 @@ document.addEventListener("DOMContentLoaded", function () {
     if (langSwitch) {
         langSwitch.addEventListener('change', (e) => {
             setLanguage(e.target.value);
+        });
+    }
+
+    // ==========================================
+    // 4. VISIONNEUSE DE DOCUMENTS (CV, certifications)
+    // ==========================================
+    const viewer = document.getElementById('doc-viewer');
+
+    // Les mobiles qui ne savent pas afficher un PDF dans la page (Android) gardent l'ouverture dans un onglet
+    const canEmbedPdf = navigator.pdfViewerEnabled !== false;
+
+    if (viewer && typeof viewer.showModal === 'function' && canEmbedPdf) {
+        const viewerFrame = document.getElementById('doc-viewer-frame');
+        const viewerTitle = document.getElementById('doc-viewer-title');
+        const viewerOpen = document.getElementById('doc-viewer-open');
+        const viewerClose = document.getElementById('doc-viewer-close');
+
+        document.querySelectorAll('a[data-viewer]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const url = link.getAttribute('href');
+                // Le titre reprend le texte du lien (déjà traduit) : « Mon CV », « Certification Pix »…
+                const label = (link.querySelector('p') || link).textContent.trim();
+                const lang = (langSwitch && langSwitch.value) || 'fr';
+
+                viewerTitle.textContent = label;
+                viewerFrame.title = label;
+                viewerFrame.src = url;
+                viewerOpen.href = url;
+                viewerClose.setAttribute('aria-label', (translations[lang] || translations.fr).viewer_close);
+
+                viewer.showModal();
+                document.body.classList.add('viewer-open');
+            });
+        });
+
+        viewerClose.addEventListener('click', () => viewer.close());
+
+        // Clic en dehors du document = fermeture
+        viewer.addEventListener('click', (e) => {
+            if (e.target === viewer) viewer.close();
+        });
+
+        // Échap ou bouton : on vide le cadre et on rend le scroll à la page
+        viewer.addEventListener('close', () => {
+            viewerFrame.src = 'about:blank';
+            document.body.classList.remove('viewer-open');
         });
     }
 
